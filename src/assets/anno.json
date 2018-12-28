@@ -1,0 +1,93 @@
+[{
+    "basic": {
+        "file": "",
+        "fields": [
+            ["CHROM", 1, "String", "chromosome"],
+            ["POS", 1, "String", "position"],
+            ["REF", 1, "String", "reference base(s)"],
+            ["ALT", 1, "String", "alternate base(s)"],
+            ["DP", 1, "Integer", "combined depth at this position across this sample"],
+            ["AC", 1, "Integer", "allele count in genotypes,"],
+            ["AF", 1, "Float", "allele frequency for ALT allele"]
+        ]
+    },
+    "ANN": {
+        "file": "",
+        "fields": [
+            ["HGVS_P", 1, "String", "If variant is coding, this field describes the variant using HGVS notation (Protein level)"],
+            ["HGVS_C", 1, "String", "Variant using HGVS notation (DNA level)"],
+            ["EFFECT", 1, "String", "Annotated using Sequence Ontology terms. Multiple effects can be concatenated using '&'"],
+            ["RANK", 1, "Integer", "Exon or Intron rank / total number of exons or introns"],
+            ["BIOTYPE", 1, "String", "The bare minimum is at least a description on whether the transcript is {\"Coding\", \"Noncoding\"}., Whenever possible, use ENSEMBL biotypes"],
+            ["GENE", 1, "String", "Common gene name (HGNC). Optional: use closest gene when the variant is \"intergenic\"."],
+            ["IMPACT", 1, "String", "A simple estimation of putative impact / deleteriousness : {HIGH, MODERATE, LOW, MODIFIER}"],
+            ["FEATUREID", 1, "String", "Depending on the annotation, this may be: Transcript ID (preferably using version number), Motif ID, miRNA, ChipSeq peak, Histone mark, etc."]
+        ]
+    },
+    "cosmic": {
+        "file": "cosmic85.2",
+        "fields": [
+            ["COSID", 1, "String", "unique mutation identifier in COSMIC"],
+            ["GENE", 1, "String", "The gene name for which the data has been curated in COSMIC. In most cases this is the accepted HGNC identifier"],
+            ["SNP", 1, "String", "All the known SNPs are flagged as SNP defined by the 1000 genomes project, dbSNP and a panel of 378 normal (non-cancer) samples from Sanger CGP sequencing"],
+            ["CDS", 1, "String", "The change that has occurred in the nucleotide sequence. Formatting is identical to the method used for the peptide sequence"],
+            ["AA", 1, "String", "The change that has occurred in the peptide sequence. Formatting is based on the recommendations made by the Human Genome Variation Society"],
+            ["CNT", 1, "Float", "how many sample has this mutation in COSMIC database"],
+            ["CNT_LUNG", 1, "Float", "how many sample with lung cancer has this mutation in COSMIC database"],
+            ["CNT_Large_intestine", 1, "Float", "how many sample with large intestine cancer has this mutation in COSMIC database"]
+        ]
+    },
+    "exac": {
+        "file": "ExAC_0.3.1",
+        "fields": [
+            ["ExAC_ALL", 1, "Float", "Allele count in genotypes"],
+            ["ExAC_AC_AFR", 1, "Float", "African/African American Allele Counts"],
+            ["ExAC_AC_AMR", 1, "Float", "American Allele Counts"],
+            ["ExAC_AC_EAS", 1, "Float", "East Asian Allele Counts"],
+            ["ExAC_AC_FIN", 1, "Float", "Finnish Allele Counts"],
+            ["ExAC_AC_NFE", 1, "Float", "Non-Finnish European Allele Counts"],
+            ["ExAC_AC_OTH", 1, "Float", "Other Allele Counts"],
+            ["ExAC_AC_SAS", 1, "Float", "South Asian Allele Counts"]
+        ]
+    },
+    "1000genomes": {
+        "file": "1000genomes",
+        "fields": [
+            ["1000G_ALL", 1, "Float", "Estimated allele frequency in the range (0, 1) provided by 1000genomes"],
+            ["1000G_EAS_AF", 1, "Float", "Allele frequency in the East Asian populations provided by  1000genomes database"],
+            ["1000G_AMR_AF", 1, "Float", "Allele frequency in the American populations provided by  1000genomes database"],
+            ["1000G_AFR_AF", 1, "Float", "Allele frequency in the African/African populations provided by  1000genomes database"],
+            ["1000G_EUR_AF", 1, "Float", "Allele frequency in the European populations provided by  1000genomes database"],
+            ["1000G_SAS_AF", 1, "Float", "Allele frequency in the South Asian populations provided by  1000genomes database"],
+            ["DBSNP_ID", 1, "String", "DBSNP_ID annotation provided by 1000genomes database"]
+		]
+    },
+    "clinvar": {
+        "file": "clinvar_20180603",
+        "fields": [
+            ["clinvar_CLINSIG", 1, "String", "Clinical significance for this single variant"],
+            ["clinvar_CLNDBN", 1, "String", "ClinVar's preferred disease name for the concept specified by disease identifiers in CLNDISDB"]
+        ]
+    },
+    "dbsnp": {
+        "file": "dbsnp_b150_GRCh37p13_20170710_V1",
+        "fields": [
+            ["dbSNP_ID", 1, "String", "DBSNP_ID annotation provided by 1000genomes database"],
+            ["Variant_Allele_Origin", 1, "String", "Clinical significance for this single variant"],
+            ["Variation_Class", 1, "String", "ClinVar's preferred disease name for the concept specified by disease identifiers in CLNDISDB"]
+        ]
+    },
+    "gnomad": {
+    	"file": "gnomad_genome",
+    	"fields": [
+        	["gnomAD_genome_ALL", 1, "Float", "Estimated allele frequency in the range (0, 1) provided by gnomad"],
+        	["gnomAD_genome_AFR", 1, "Float", "Allele frequency in the African populations provided by  gnomad database"],
+        	["gnomAD_genome_AMR", 1, "Float", "Allele frequency in the Admixed American populations provided by  gnomad database"],
+        	["gnomAD_genome_ASJ", 1, "Float", "Allele frequency in the Ashkenazi Jewish populations provided by  gnomad database"],
+            ["gnomAD_genome_EAS", 1, "Float", "Allele frequency in the East Asian populations provided by  gnomad database"],
+            ["gnomAD_genome_FIN", 1, "Float", "Allele frequency in the Finnish populations provided by  gnomad database"],
+            ["gnomAD_genome_NFE", 1, "Float", "Allele frequency in the Non-finnish European populations provided by  gnomad database"],
+            ["gnomAD_genome_OTH", 1, "Float", "Allele frequency in the other populations provided by  gnomad database"]
+    	]
+	}
+}]
