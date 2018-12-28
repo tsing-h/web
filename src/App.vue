@@ -5,18 +5,9 @@
       <router-link to="/table">Table</router-link> |
       <router-link to="/about">About</router-link> 
     </div>
-    
-    <!-- <div>
-      <p>
-        If Element is successfully added to this project, you'll see an
-        <code v-text="'<el-button>'"></code>
-        below
-      </p>
-
-      <el-button>el-button2</el-button>
-    </div> -->
-
-    <router-view/>
+    <div class="container">
+      <router-view/>
+    </div>
   </div>
 </template>
 

@@ -1,22 +1,17 @@
 <template>
-  <div class="about">
-    <el-container>
-      <!-- 筛选区域 -->
-      <el-header>
-        筛选条件区域
-        <el-row :gutter="20">
-          <el-col :xs="24" :sm="12">
-            <el-input></el-input>
-          </el-col>
-        </el-row>
-      </el-header>
-      <!-- 数据展示区 -->
-      <el-main>
-        <h1>Show All Mutations</h1>
-        <!-- 表格数据展示区域 -->
-        数据展示
-      </el-main>
-    </el-container>
+  <div class="container-flex">
+    <!-- 筛选区域 -->
+    <div class="well filter">
+      <!-- 筛选条件区域 -->
+      <div class="alert alert-primary" role="alert">
+        This is a primary alert—check it out!
+      </div>
+    </div>
+
+    <!-- 数据展示区 -->
+    <h1>Show All Mutations</h1>
+    <!-- 表格数据展示区域 -->
+    数据展示
   </div>
 </template>
 
@@ -29,15 +24,22 @@
 */
 export default {
   data: () => {
-    fields = {
-      basic: ['CHROM', 'POS', 'REF', 'ALT', 'AC', 'DP', 'AF'],
-      snpeff: []
-    },
-    cf = [],
-    wbc = null
+    return {
+      fields : {
+        basic: ['CHROM', 'POS', 'REF', 'ALT', 'AC', 'DP', 'AF'],
+        snpeff: []
+      },
+      conditions : {
+
+      },
+      cf : [],
+      wbc : null
+    }
   },
   methods: {
-    
+    created: () => {
+      // 读取本地文件，初始化数据
+    }
   },
 }
 </script>
