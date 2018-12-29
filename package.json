@@ -9,7 +9,9 @@
   },
   "dependencies": {
     "bootstrap-vue": "^2.0.0-rc.11",
+    "bootstrap3": "^3.3.5",
     "element-ui": "^2.4.5",
+    "jQuery": "^1.7.4",
     "vue": "^2.5.17",
     "vue-class-component": "^6.0.0",
     "vue-property-decorator": "^7.0.0",
