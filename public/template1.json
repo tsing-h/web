@@ -1,0 +1,66 @@
+{
+  "name": "测试模板1",
+  "product": "易感",
+  "groups": [
+    {
+      "name": "basic",
+      "label": "基本信息",
+      "fileds": [
+        {
+          "name": "age",
+          "label": "年龄",
+          "type": "int",
+          "default": null
+        },
+        {
+          "name": "gender",
+          "label": "性别",
+          "type": "ratio",
+          "default": "男",
+          "value": [
+            {
+              "男": null
+            },
+            {
+              "女": null
+            }
+          ]
+        },
+        {
+          "name": "drink",
+          "label": "是否饮酒",
+          "type": "ratio",
+          "value": [
+            {
+              "经常": [
+                {
+                  "name": "何种酒",
+                  "type": "str"
+                },
+                {
+                  "name": "数量",
+                  "type": "str"
+                }
+              ]
+            },
+            {
+              "有时": [
+                {
+                  "name": "何种酒",
+                  "type": "str"
+                },
+                {
+                  "name": "数量",
+                  "type": "str"
+                }
+              ]
+            },
+            {
+              "从不": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

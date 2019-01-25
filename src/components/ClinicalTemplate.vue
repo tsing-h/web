@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-/* eslint-disable no-console */
 <template>
   <div class="container-flex">
     <div class="row">
@@ -133,11 +132,10 @@
               <!-- file -->
               <el-upload
                 v-if="field.type=='file'"
-                action="/"
+                :action="file_upload"
                 :multiple="field.multiple"
                 :auto-upload="false"
                 list-type="picture-card"
-                :on-preview="handlePictureCardPreview"
                 :on-remove="handleRemove"
               >
                 <i class="el-icon-plus"></i>
@@ -172,6 +170,10 @@
 <script lang="ts">
 // https://github.com/kaorun343/vue-property-decorator`
 import { Component, Prop, Vue } from "vue-property-decorator";
+import axios from "axios";
+import Element from "element-ui";
+import "element-ui/lib/theme-chalk/index.css";
+Vue.use(Element);
 
 @Component
 export default class ClinicalTemplate extends Vue {
@@ -181,7 +183,8 @@ export default class ClinicalTemplate extends Vue {
   // onPersonChanged1(val: Person, oldVal: Person) { }
 
   // @Emit(event?: string) decorator
-  config_test: object = {
+
+  config_test: any = {
     name: "测试模板",
     url: "",
     groups: [
@@ -247,13 +250,15 @@ export default class ClinicalTemplate extends Vue {
   };
 
   cur_template: string = "";
-  template_list: object = {
-    suscep: { name: "suscep", url: "", groups: {} },
-    "target-drug": { name: "target-drug", url: "", groups: {} },
+  template_list: {
+    [name: string]: { name: string; url: string; groups: any };
+  } = {
+    suscep: { name: "suscep", url: "", groups: [] },
+    "target-drug": { name: "target-drug", url: "", groups: [] },
     test: this.config_test
   };
 
-  field_types: Array<object> = [
+  field_types: Array<{ name: string; label: string }> = [
     { name: "number", label: "数字" },
     { name: "text", label: "字符串" },
     { name: "textarea", label: "段落" },
@@ -261,13 +266,14 @@ export default class ClinicalTemplate extends Vue {
     { name: "datetime", label: "日期时间" },
     { name: "select", label: "选择" }
   ];
-  config = {};
+  config: any = {};
   add: number = -1; // 点击添加fields时, add修改为对应组
-  cur_field: object = {};
+  cur_field: { [key: string]: any } = {};
 
-  formdata: object = {};
+  formdata: { [key: string]: any } = {};
 
-  fileList: Array<object> = [
+  file_upload: string = "/";
+  fileList: Array<{ name: string; url: string }> = [
     {
       name: "food.jpeg",
       url:
@@ -299,7 +305,7 @@ export default class ClinicalTemplate extends Vue {
     if (!this.config["groups"]) this.config["groups"] = [];
     this.formdata["group" + this.config["groups"].length] = {};
     this.config["groups"].push({});
-
+    this["$message"].warning("add new group");
     this.$forceUpdate();
   }
 
@@ -318,7 +324,7 @@ export default class ClinicalTemplate extends Vue {
   }
 
   addfield(index_group: number) {
-    let field_item = {
+    let field_item: { [key: string]: any } = {
       name: this.cur_field["name"],
       label: this.cur_field["name"],
       type: this.cur_field["type"],
@@ -328,12 +334,12 @@ export default class ClinicalTemplate extends Vue {
     if (field_item["type"] == "select") {
       let tmpvalue = this.cur_field["value"].split(";");
       // 处理subs
-      let tmpobj = {};
-      this.cur_field["value"].split(";").forEach(i => {
+      let tmpobj: any = {};
+      this.cur_field["value"].split(";").forEach((i: any) => {
         return (tmpobj[i] = { value: i, subs: [] });
       });
       if (this.cur_field["subs"]) {
-        this.cur_field["subs"].forEach(item => {
+        this.cur_field["subs"].forEach((item: any) => {
           tmpobj[item["key"]].subs.push({
             name: item["name"],
             label: item["name"],
@@ -353,8 +359,17 @@ export default class ClinicalTemplate extends Vue {
     this.cur_field = { subs: [], multiple: false };
   }
 
+  url_save_template: string = "http://localhost:5000/clinicals/savetemplate/";
   save_template() {
     console.log(JSON.stringify(this.template_list[this.cur_template]));
+    axios
+      .post(
+        this.url_save_template + this.cur_template,
+        JSON.stringify(this.template_list[this.cur_template])
+      )
+      .then((resp: any) => {
+        console.log(resp);
+      });
   }
   save_group() {}
 
@@ -371,11 +386,11 @@ export default class ClinicalTemplate extends Vue {
       } 个文件，共选择了 ${files.length + fileList.length} 个文件`
     );
   }
-  beforeRemove(file: object, fileList: Array<object>) {
+  beforeRemove(file: any, fileList: Array<object>) {
     return this.$confirm(`确定移除 ${file.name}？`);
   }
 
-  handlePictureCardPreview(file: object) {
+  handlePictureCardPreview(file: any) {
     this.dialogImageUrl = file.url;
     this.dialogVisible = true;
   }
