@@ -1,18 +1,6 @@
 /* eslint-disable no-console */
 <template>
   <div class="container-flex">
-    <div class="row">
-      <el-select v-model="cur_template" placeholder="选择已有模板" @change="change_template">
-        <el-option
-          v-for="(item, key) in template_list"
-          :key="item.name"
-          :label="item.name"
-          :value="key">
-        </el-option>
-      </el-select>
-      <el-button class="el-icon-plus" @click="add_template"> 新建模板</el-button>
-    </div>
-
     <!-- 模板内容 -->
     <div class="row border-top mt-3 " v-if="cur_template">
       <!-- 模板名称 && 可选操作 -->
@@ -178,92 +166,17 @@ Vue.use(Element);
 @Component
 export default class ClinicalTemplate extends Vue {
   @Prop() private msg!: string;
+  // 创建表单 or 渲染表单并上传数据
+  @Prop() private editable!: string;
+  // 当前模板的配置内容
+  @Prop() private template_config!: any;
 
   // @Watch('person', { immediate: true, deep: true })
   // onPersonChanged1(val: Person, oldVal: Person) { }
 
   // @Emit(event?: string) decorator
 
-  config_test: any = {
-    name: "测试模板",
-    url: "",
-    templateid: "",
-    groups: [
-      {
-        name: "basic",
-        label: "基本信息",
-        fields: [
-          {
-            name: "age",
-            label: "年龄",
-            type: "number",
-            default: 0
-          },
-          {
-            name: "gender",
-            label: "性别",
-            type: "select",
-            values: [{ value: "男" }, { value: "女" }]
-          },
-          {
-            name: "factor",
-            label: "因子",
-            type: "select",
-            values: [
-              {
-                value: "吸烟",
-                subs: [
-                  { name: "烟龄", type: "str", label: "烟龄" },
-                  { name: "烟龄2", type: "str", label: "烟龄2" }
-                ]
-              },
-              {
-                value: "喝酒",
-                subs: [{ name: "酒龄", type: "str", label: "酒龄" }]
-              },
-              { value: "烫头" }
-            ]
-          },
-          {
-            name: "yingxiang",
-            label: "影像",
-            type: "file",
-            multiple: true
-          },
-          {
-            name: "多行文字",
-            label: "多行文字",
-            type: "textarea"
-          },
-          {
-            name: "单行文字",
-            label: "单行文字",
-            type: "text"
-          }
-        ]
-      },
-      {
-        name: "basic",
-        label: "基本信息2",
-        fields: []
-      }
-    ]
-  };
-
-  cur_template: string = "";
-  template_list: {
-    [name: string]: {
-      name: string;
-      url: string;
-      templateid: string;
-      groups: any;
-    };
-  } = {
-    suscep: { name: "suscep", url: "", templateid: "", groups: [] },
-    "target-drug": { name: "target-drug", url: "", templateid: "", groups: [] },
-    test: this.config_test
-  };
-
+  // 表单支持的类型
   field_types: Array<{ name: string; label: string }> = [
     { name: "number", label: "数字" },
     { name: "text", label: "字符串" },
@@ -272,10 +185,15 @@ export default class ClinicalTemplate extends Vue {
     { name: "datetime", label: "日期时间" },
     { name: "select", label: "选择" }
   ];
+
   config: any = {};
+
+  // toggle 添加字段模块
   add: number = -1; // 点击添加fields时, add修改为对应组
+  // 当前待添加字段的内容
   cur_field: { [key: string]: any } = {};
 
+  // 用户填写的表单实际内容
   formdata: { [key: string]: any } = {};
 
   file_upload: string = "/";
@@ -294,31 +212,15 @@ export default class ClinicalTemplate extends Vue {
   dialogImageUrl: string = "";
   dialogVisible: boolean = false;
 
-  add_template() {
-    const name =
-      "template_" +
-      Math.random()
-        .toString(36)
-        .slice(-8);
-    this.template_list[name] = {
-      name: name,
-      url: "",
-      groups: [],
-      templateid: name
-    };
-    this.cur_template = name;
-    this.config = this.template_list[name];
-    this.$forceUpdate();
-  }
-
+  // 添加组
   add_group() {
-    if (!this.cur_template) return;
     if (!this.config["groups"]) this.config["groups"] = [];
     this.formdata["group" + this.config["groups"].length] = {};
     this.config["groups"].push({});
     this.$forceUpdate();
   }
 
+  // 新增或修改表单模板相关函数   select字段在选择某些选项时，需要填写额外内容
   addsub() {
     if (this.cur_field["sub_name"] && this.cur_field["sub_key"]) {
       if (!this.cur_field["subs"]) {
@@ -333,6 +235,7 @@ export default class ClinicalTemplate extends Vue {
     }
   }
 
+  // 新增或修改表单模板相关函数   添加字段
   addfield(index_group: number) {
     let field_item: { [key: string]: any } = {
       name: this.cur_field["name"],
@@ -371,22 +274,24 @@ export default class ClinicalTemplate extends Vue {
 
   url_prefix: string = "http://localhost:5000/clinicals";
   url_save_template: string = this.url_prefix + "/savetemplate/";
+  // 新增或修改表单模板相关函数   保存模板
   save_template() {
-    console.log(JSON.stringify(this.template_list[this.cur_template]));
+    console.log(JSON.stringify(this.config));
     // templateid
-    const templateid = this.template_list[this.cur_template].templateid;
+    const templateid = this.config.templateid;
     axios
-      .post(
-        this.url_save_template + templateid,
-        JSON.stringify(this.template_list[this.cur_template])
-      )
+      .post(this.url_save_template + templateid, JSON.stringify(this.config))
       .then((resp: any) => {
         // console.log(resp.data.templateid);
-        this.template_list[this.cur_template].templateid = resp.data.templateid;
+        this.config.templateid = resp.data.templateid;
       });
   }
-  save_group() {}
+  // 新增或修改表单模板相关函数   保存组
+  save_group() {
+    /* 无需操作 */
+  }
 
+  // 处理图片上传
   handleRemove(file: object, fileList: Array<object>) {
     console.log(file, fileList);
   }

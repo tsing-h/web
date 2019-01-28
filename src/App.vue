@@ -14,17 +14,18 @@
       </p>
       <el-button>el-button</el-button>
     </div> -->
-    <ClinicalTemplate msg="Hello ClinicalTemplate"/>
+    <!-- <ClinicalTemplate msg="Hello ClinicalTemplate"/> -->
+    <router-view/>
   </div>
 </template>
 
 <script>
-import ClinicalTemplate from "./components/ClinicalTemplate.vue";
+// import ClinicalTemplate from "./components/ClinicalTemplate.vue";
 
 export default {
   name: "app",
   components: {
-    ClinicalTemplate
+    // ClinicalTemplate
   }
 };
 </script>
