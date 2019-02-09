@@ -211,7 +211,15 @@ export default class ClinicalTemplate extends Vue {
   ];
   dialogImageUrl: string = "";
   dialogVisible: boolean = false;
-
+  cur_template: string = "";
+  template_list: {
+    [name: string]: {
+      name: string;
+      url: string;
+      templateid: string;
+      groups: any;
+    };
+  } = {};
   // 添加组
   add_group() {
     if (!this.config["groups"]) this.config["groups"] = [];

@@ -9,13 +9,13 @@
           :value="key">
         </el-option>
       </el-select>
-      <el-button class="el-icon-plus" @click="add_template"> 新建模板X</el-button>
+      <el-button class="el-icon-plus" @click="add_template"> 新建模板</el-button>
     </div>
-    <div class="row card mt-2">
+    <!-- <div class="row card mt-2">
       <code>{{ this.config }}</code>
-    </div>
+    </div> -->
     <!-- <router-view></router-view> -->
-    <Test msg="this is test" v-bind:template_config="config" v-bind:edit="false" v-if="config.name"></Test>
+    <Test msg="this is test" v-bind:config="config" v-bind:edit="false" v-if="config.templateid"></Test>
     <!-- <FormTemplate  v-bind:template_config="config" v-bind:editable="editable" v-if="cur_template"/> -->
     <!-- 模板内容 -->
   </div>
@@ -73,19 +73,19 @@ export default class Template extends Vue {
   }
 
   add_template() {
-    const name =
+    const templateid =
       "template_" +
       Math.random()
         .toString(36)
         .slice(-8);
-    this.template_list[name] = {
-      name: name,
+    this.template_list[templateid] = {
+      name: templateid,
       url: "",
       groups: [],
-      templateid: name
+      templateid: templateid
     };
-    this.cur_template = name;
-    this.config = this.template_list[name];
+    this.cur_template = templateid;
+    this.config = this.template_list[templateid];
     this.$forceUpdate();
   }
 

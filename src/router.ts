@@ -14,6 +14,11 @@ export default new Router({
       component: Home
     },
     {
+      path: "/index",
+      name: "index",
+      component: () => import(/* webpackChunkName: "index" */ "./views/Index.vue")
+    },
+    {
       path: "/template",
       name: "template",
       component: () => import(/* webpackChunkName: "template" */ "./views/Template.vue")
@@ -26,6 +31,16 @@ export default new Router({
       // which is lazy-loaded when the route is visited.
       component: () =>
         import(/* webpackChunkName: "about" */ "./views/About.vue")
+    },
+    {
+      path: "/adddata",
+      name: "adddata",
+      component: () => import(/* webpackChunkName: "adddata" */ "./views/Adddata.vue")
+    },
+    {
+      path: "/detail",
+      name: "detail",
+      component: () => import(/* webpackChunkName: "detail" */ "./views/Detail.vue")
     }
   ]
 });

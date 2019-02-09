@@ -4,17 +4,18 @@
       <!-- 编辑模板 -->
       <div class="col pl-0 my-1" v-if="editable">
         <label class="h4 float-left mt-2">模板名称:</label>
-        <el-input v-model="config.name" placeholder="请修改模板名称" :class="'w-25 float-left ml-2'"></el-input>
+        <el-input v-model="config.name" placeholder="请修改模板名称" :class="'w-25 float-left ml-2'" required></el-input>
 
         <el-button class="el-icon-refresh float-right ml-2" @click="save_template"> 保存模板</el-button>
         <el-button class="el-icon-plus float-right" @click="add_group"> 添加Group</el-button>
       </div>
-      <!-- 填写表单数据 -->
+      <!-- 可以填写表单数据 -->
       <div class="col pl-0 my-1" v-if="!editable">
         <label class="h4 float-left mt-2">模板名称: {{ config.name }}</label>
 
         <el-button class="el-icon-refresh float-right ml-2" @click="save_data"> 保存数据</el-button>
         <el-button class="el-icon-edit float-right" @click="editable=!editable"> 编辑模板</el-button>
+        <el-button class="el-icon-delete float-right" @click="delete_template"> 删除模板</el-button>
       </div>
       <div class="w-100 ">  </div>
 
@@ -49,7 +50,9 @@
             </el-collapse-transition>
           </li>
           <!-- 渲染模板 -->
-
+          <li class="list-group-item text-left" v-for="(field, index) in group.fields" :key="index">
+            <FieldRender v-bind:field="field" />
+          </li>
         </ul>
       </div>
     </div>
@@ -58,8 +61,11 @@
 
 <script lang="ts">
 import { Component, Prop, Watch, Vue } from "vue-property-decorator";
+import axios from "axios";
 import FieldGenerate from "@/components/FieldGenerate.vue";
+import FieldRender from "@/components/FieldRender.vue";
 Vue.component("FieldGenerate", FieldGenerate);
+Vue.component("FieldRender", FieldRender);
 
 @Component
 export default class Test extends Vue {
@@ -76,6 +82,7 @@ export default class Test extends Vue {
     // this.config = { ...this.template_config };
   }
 
+  url_prefix: string = "http://localhost:5000/clinicals";
   // config: any = { ...this.template_config };
   editable: boolean = this.edit;
   tmp_field: any = {};
@@ -85,6 +92,9 @@ export default class Test extends Vue {
 
   save_data() {}
 
+  delete_template() {
+    axios.get(`${this.url_prefix}/${this.config.templateid}/delete`);
+  }
   save_template() {
     this.editable = !this.editable;
   }
