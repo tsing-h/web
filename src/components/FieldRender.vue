@@ -103,13 +103,23 @@
 <script lang="ts">
 import { Component, Prop, Watch, Emit, Vue } from "vue-property-decorator";
 
+interface FieldOption {
+  name: string;
+  label: string;
+}
+interface FieldType {
+  [key: string]: any;
+}
+
 @Component
 export default class FieldRender extends Vue {
-  @Prop() private field!: { [key: string]: any };
-  @Prop({ type: Boolean, default: false })
-  private edit!: boolean;
+  @Prop() private field!: FieldType;
+
   @Prop({ default: "" })
   private value!: any;
+
+  @Prop({ type: Boolean, default: false })
+  private editable!: boolean;
 
   public get sub_items(): Function {
     return (value: string) => {
@@ -123,13 +133,13 @@ export default class FieldRender extends Vue {
 
   @Watch("field")
   onFieldChanged(val: any, oldval: any) {
-    this.value2 = "";
-    console.log(this.field);
+    this.value2 = this.value;
   }
 
   handle_model() {
     this.$emit("input", this.value2);
   }
+
   handle_select() {
     this.$emit("input", { value: this.value2, subs: this.sub_values });
     this.$forceUpdate();
@@ -141,7 +151,8 @@ export default class FieldRender extends Vue {
   upload_url: string = "";
 
   // 表单支持的类型
-  field_types: Array<{ name: string; label: string }> = [
+
+  field_types: FieldOption[] = [
     { name: "number", label: "数字" },
     { name: "text", label: "字符串" },
     { name: "textarea", label: "段落" },

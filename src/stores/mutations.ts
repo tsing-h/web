@@ -4,18 +4,14 @@ import { MutationTree, Mutation } from "vuex";
 import { State, CONFIG, GROUP, FIELD, Item } from "@/store";
 
 const mutations: MutationTree<State> = {
-  // init template
-  [types.INIT_TEMPLATE_LIST]: (
-    state: State,
-    payload: { [template_id: string]: CONFIG }
-  ) => {
-    state.template_list = payload;
-    console.log("init", payload);
+  CHANGE_API_URL(state: State, new_url: string) {
+    state.url_prefix = new_url;
+    console.log("init", state.url_prefix);
   },
   // add template
   [types.ADD_TEMPLATE](state: State, payload: CONFIG) {
     state.template_list[payload.template_id] = { ...payload };
-    console.log("add", state.template_list);
+    // console.log("add", state.template_list);
   },
   // update template
   [types.UPDATE_TEMPLATE](state: State, payload: CONFIG) {
@@ -24,8 +20,9 @@ const mutations: MutationTree<State> = {
     console.log("update", payload);
   },
   // delete template
-  [types.DELETE_TEMPLATE](state: State, template_id: string) {
+  [types.DELETE_TEMPLATE](state: State, { template_id }) {
     delete state.template_list[template_id];
+    state.template_id = "";
     console.log("delete", template_id);
   },
 
@@ -53,6 +50,11 @@ const mutations: MutationTree<State> = {
 
   [types.SELECT_ITEM](state: State, index: number) {
     state.current_item = index;
+  },
+
+  [types.SHOW_ITEM](state: State, item: Item) {
+    state.item_detail = { ...item };
+    console.log("show detail info for data: ", item);
   },
 
   // add group

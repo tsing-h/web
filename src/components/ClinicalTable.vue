@@ -23,7 +23,7 @@
     </template>
     -->
     <template slot="ACTIONS" slot-scope="row">
-        <b-button size="sm" @click.stop="$router.push({path:'/detail', params: row})"> Details</b-button>
+        <b-button size="sm" @click.stop="show_detail(row)"> Details</b-button>
     </template>
     <!--
     Details
@@ -58,6 +58,7 @@
 <script lang="ts">
 import { Component, Prop, Watch, Model, Vue } from "vue-property-decorator";
 import axios from "axios";
+import * as types from "../stores/mutations_type";
 
 @Component
 export default class ClinicalTable extends Vue {
@@ -146,6 +147,11 @@ export default class ClinicalTable extends Vue {
       : isFinite(b)
         ? 1
         : a.localeCompare(b);
+  }
+
+  show_detail(row) {
+    this.$store.commit(types.SHOW_ITEM, row.item);
+    this.$router.push({ path: "/detail" });
   }
 }
 </script>

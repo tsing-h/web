@@ -16,12 +16,14 @@ export default new Router({
     {
       path: "/index",
       name: "index",
-      component: () => import(/* webpackChunkName: "index" */ "./views/Index.vue")
+      component: () =>
+        import(/* webpackChunkName: "index" */ "./views/Index.vue")
     },
     {
       path: "/template",
       name: "template",
-      component: () => import(/* webpackChunkName: "template" */ "./views/Template.vue")
+      component: () =>
+        import(/* webpackChunkName: "template" */ "./views/Template.vue")
     },
     {
       path: "/about",
@@ -35,12 +37,14 @@ export default new Router({
     {
       path: "/adddata",
       name: "adddata",
-      component: () => import(/* webpackChunkName: "adddata" */ "./views/Adddata.vue")
+      component: () =>
+        import(/* webpackChunkName: "adddata" */ "./views/Adddata.vue")
     },
     {
       path: "/detail",
       name: "detail",
-      component: () => import(/* webpackChunkName: "detail" */ "./views/Detail.vue")
+      component: () =>
+        import(/* webpackChunkName: "detail" */ "./views/Showdata.vue")
     }
   ]
 });

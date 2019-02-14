@@ -1,5 +1,8 @@
 <template>
   <div class="container-flex">
+    
+    <TemplateSwitch v-bind:url="'http://localhost:5000/clinicals/templatelist'" :add="false" class="col w-100 " />
+    <FormRender msg="this is test" v-bind:editable="true" v-if="$store.getters.config.template_id" :item="$store.state.item_detail"></FormRender>
     <div class="row">
       <el-select v-model="cur_template" placeholder="选择已有模板" @change="change_template">
         <el-option
@@ -11,13 +14,8 @@
       </el-select>
       <el-button class="el-icon-plus" @click="add_template"> 新建模板</el-button>
     </div>
-    <!-- <div class="row card mt-2">
-      <code>{{ this.config }}</code>
-    </div> -->
-    <!-- <router-view></router-view> -->
     <Test msg="this is test" v-bind:config="config" v-bind:edit="false" v-if="config.templateid"></Test>
     <!-- <FormTemplate  v-bind:template_config="config" v-bind:editable="editable" v-if="cur_template"/> -->
-    <!-- 模板内容 -->
   </div>
 </template>
 
@@ -34,11 +32,16 @@ Vue.use(Element);
 import FormTemplate from "@/components/FormTemplate.vue"; // @ is an alias to /src
 import Test from "@/components/Test.vue";
 
+import TemplateSwitch from "@/components/TemplateSwitch.vue";
+import FormRender from "@/components/FormRender.vue";
+
 @Component({
   components: {
     // ClinicalTemplate
     FormTemplate,
-    Test
+    Test,
+    TemplateSwitch,
+    FormRender
   }
 })
 export default class Template extends Vue {

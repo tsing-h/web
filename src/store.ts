@@ -40,6 +40,8 @@ export interface State {
   page_size: number;
   // 数据详情页当前条目数据索引
   current_item: number;
+  item_detail: Item;
+  url_prefix: string;
 }
 
 const state: State = {
@@ -48,7 +50,9 @@ const state: State = {
   template_list: {},
   page: 0,
   page_size: 10,
-  current_item: 0
+  current_item: 0,
+  item_detail: {},
+  url_prefix: "http://localhost:5000/clinicals"
 };
 
 let getters = {

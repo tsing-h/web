@@ -9,7 +9,7 @@
     >
       <!-- :popper-append-to-body="false" -->
         <el-option
-          v-for="(item, key) in $store.state.template_list"
+          v-for="(item, key) in template_list"
           :key="item.name"
           :label="item.name"
           :value="key">
@@ -36,38 +36,31 @@ export default class TemplateSwitch extends Vue {
   // 组件数据交互 v-model功能需要有个Prop：value，以及适当情况下$emit("input", value)
 
   cur_template: string = "";
-  // 从state中继承 template_list, config, template_id
+  template_list: {
+    [name: string]: CONFIG;
+  } = {};
 
-  // template_list: $store.state.template_list;
-  // template_list: {
-  //   [name: string]: CONFIG;
-  // } = this.$store.state.template_list;
-  // config: any = this.$store.getters.config;
+  @Watch("$store.state.template_id")
+  HandleChange(newVal, oldVal) {
+    this.cur_template = newVal;
+  }
 
   created() {
-    axios
-      .get(this.url)
-      .then(rsp => {
-        let data = rsp.data.data;
-        // console.log(data);
-        for (const key in data) {
-          // const element = data[key];
-          // element.name = element.template_name;
-          let config: CONFIG = {
-            name: data[key].template_name,
-            url: data[key].url,
-            template_id: data[key].templateid,
-            groups: []
-          };
-          this.$store.commit(types.ADD_TEMPLATE, config);
+    // const _template_list: string[] = [];
+    this.cur_template = this.$store.state.template_id;
+    this.template_list = this.$store.state.template_list;
+    if (!this.cur_template) {
+      this.$store
+        .dispatch(types.ACTION_INIT_TEMPLATE_LIST, { url: this.url })
+        .then(() => {
+          console.log(
+            "init template list end",
+            this.$store.state.template_list
+          );
+          this.template_list = this.$store.state.template_list;
           this.$forceUpdate();
-        }
-        // this.template_list = data;
-        // this.$store.commit("init_template", data);
-      })
-      .catch(e => {
-        // this.template_list = {};
-      });
+        });
+    }
   }
 
   add_template() {
