@@ -98,16 +98,14 @@ export default class FormRender extends Vue {
   }
 
   save_template() {
-    this.$store
-      .dispatch(types.ACTION_UPDATE_TEMPLATE, {
-        template_id: this.config.template_id
-      })
-      .then(() => {
-        this.$message({
-          message: "模板已保存",
-          type: "success"
-        });
-      });
+    // 检查模板信息是否符合规定
+    if (this.config.name === "template_unknown_name") {
+      this.$message({ type: "error", message: "请修改模板名称" });
+      return;
+    }
+    this.$store.dispatch(types.ACTION_UPDATE_TEMPLATE, {
+      template_id: this.config.template_id
+    });
   }
 }
 </script>

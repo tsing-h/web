@@ -11,7 +11,7 @@ const mutations: MutationTree<State> = {
   // add template
   [types.ADD_TEMPLATE](state: State, payload: CONFIG) {
     state.template_list[payload.template_id] = { ...payload };
-    // console.log("add", state.template_list);
+    state.template_id = payload.template_id;
   },
   // update template
   [types.UPDATE_TEMPLATE](state: State, payload: CONFIG) {
@@ -72,20 +72,24 @@ const mutations: MutationTree<State> = {
     // TODO
   },
   // add field
-  [types.ADD_FIELD](state: State, payload: any) {
+  [types.ADD_FIELD](state: State, { index_group, field }) {
     // TODO
+    console.log("add field", { index_group, field });
+    state.template_list[state.template_id].groups[index_group].fields.push(
+      field
+    );
   },
   // delete field
   [types.DELETE_FIELD](
     state: State,
-    payload: { group_index: number; field_index: number }
+    payload: { index_group: number; index_field: number }
   ) {
     state.template_list[state.template_id].groups[
-      payload.group_index
-    ].fields.splice(payload.field_index, 1);
+      payload.index_group
+    ].fields.splice(payload.index_field, 1);
     console.log(
-      `delete the [${payload.field_index}th] field in the [` +
-        `${payload.group_index}th] GROUP for TEMPLATE[${state.template_id}]\n`,
+      `delete the [${payload.index_field}th] field in the [` +
+        `${payload.index_group}th] GROUP for TEMPLATE[${state.template_id}]\n`,
       payload,
       state.template_list[state.template_id]
     );

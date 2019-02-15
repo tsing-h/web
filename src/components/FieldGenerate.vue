@@ -55,8 +55,15 @@ export default class FieldGenerate extends Vue {
   // @Prop() private field!: { [key: string]: any };
   // @Prop() private edit!: boolean;
 
-  @Model("submit", { type: Object })
-  field!: { [key: string]: any };
+  // @Model("submit", { type: Object })
+  // field!: { [key: string]: any };
+  field: { [key: string]: any } = { subs: [], multiple: false };
+
+  // 配合v-if, 保证组件每次出现时都触发created
+  created() {
+    this.$message("created component");
+    this.field = { subs: [], multiple: false };
+  }
 
   // 表单支持的类型
   field_types: Array<{ name: string; label: string }> = [
@@ -114,9 +121,11 @@ export default class FieldGenerate extends Vue {
       }
     }
 
+    // 避免在组件内直接修改prop
+    // this.field = { subs: [], multiple: false };
+    // this.field = { ...field_item };
+
     // 将组件数据交给父组件
-    this.field = { subs: [], multiple: false };
-    // this.field = field_item;
     return field_item;
   }
 }

@@ -2,7 +2,9 @@ import { Commit, ActionTree, Action } from "vuex";
 // import { Commit, Action, ActionTree } from 'vuex'
 import * as types from "./mutations_type";
 import { State, CONFIG, GROUP, FIELD, Item } from "@/store";
+
 import axios from "axios";
+import { Message } from "element-ui";
 
 const url_prefix: string = "http://localhost:5000/clinicals";
 const actions: ActionTree<State, any> = {
@@ -27,11 +29,45 @@ const actions: ActionTree<State, any> = {
     context: { commit: Commit; state: State },
     { template_id }
   ) => {
-    console.log(
-      "update template in action: ",
-      context.state.template_list[template_id]
-    );
+    // console.log(
+    //   "update template in action: ",
+    //   context.state.template_list[template_id]
+    // );
     // 上传模板配置到后台
+    const cfg: CONFIG = context.state.template_list[template_id];
+    // const cfg: string = JSON.stringify(
+    //   context.state.template_list[template_id]
+    // );
+    return axios
+      .post(`${url_prefix}/template/${template_id}`, JSON.stringify(cfg))
+      .then(rsp => {
+        const data: any = rsp.data;
+        const { status, msg, templateid } = rsp.data;
+        console.log(data.code);
+        if (status != "success"){
+          Message({
+            type: "error",
+            message: msg
+          });
+        } else {
+          const msg: string = JSON.stringify(rsp.data);
+          // 新增模板时，需要更改本地配置
+          if (template_id != templateid){
+            cfg.template_id = templateid;
+            // context.commit(types.SELECT_TEMPLATE, templateid);
+            context.commit(types.DELETE_TEMPLATE, template_id);
+            context.commit(types.ADD_TEMPLATE, cfg)
+          }
+
+          Message({
+            type: "success",
+            message: `模板${templateid}配置已保存`
+          });
+        }
+      })
+      .catch(err => {
+        Message.error("未知错误");
+      });
   },
 
   [types.ACTION_DELETE_TEMPLATE]: (
@@ -40,9 +76,15 @@ const actions: ActionTree<State, any> = {
   ) => {
     console.log("delete template in action: ", context.state.template_id);
     // 上传模板配置到后台
-    //return  axios.get(`${url_prefix}/template/${template_id}/delete`).then(() => {
-    context.commit(types.DELETE_TEMPLATE, { template_id });
-    // })
+    return axios
+      .get(`${url_prefix}/template/${template_id}/delete`)
+      .then(() => {
+        context.commit(types.DELETE_TEMPLATE, { template_id });
+        Message({
+          type: "success",
+          message: "已删除"
+        });
+      });
   },
 
   [types.ACTION_SAVE_DATA]: (

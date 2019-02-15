@@ -1,21 +1,21 @@
 <template>
-  <div class="col mx-0 px-0">
+  <div class="input-group">
     <el-select 
       v-model="cur_template" 
       placeholder="选择模板" 
       @change="change_template" 
-      :class="!add ? 'col mx-0 px-0' : 'col-auto  px-0'"
+      :class="'col mx-0 px-0'"
       :name = "'template_id'"
     >
       <!-- :popper-append-to-body="false" -->
-        <el-option
-          v-for="(item, key) in template_list"
-          :key="item.name"
-          :label="item.name"
-          :value="key">
-        </el-option>
-      </el-select>
-      <el-button class="el-icon-plus col-auto " @click="add_template" v-if="add"> 新建模板</el-button>
+      <el-option
+        v-for="(item, key) in template_list"
+        :key="key"
+        :label="item.name"
+        :value="key">
+      </el-option>
+    </el-select>
+    <el-button class="el-icon-plus col-auto " @click="add_template" v-if="add"> 新建模板</el-button>
   </div>
 </template>
 
@@ -64,19 +64,15 @@ export default class TemplateSwitch extends Vue {
   }
 
   add_template() {
-    const templateid =
-      "template_" +
-      Math.random()
-        .toString(36)
-        .slice(-8);
     const config: CONFIG = {
-      name: templateid,
+      name: "template_unknown_name",
       url: "",
-      template_id: templateid,
+      template_id: "template_unknown_id",
       groups: []
     };
-    this.$store.dispatch("add_template", config);
+    this.$store.commit(types.ADD_TEMPLATE, config);
     this.$forceUpdate();
+    this.$message({ type: "warning", message: "模板已添加，请及时更新" });
   }
 
   // 切换模板时，根据url获取模板

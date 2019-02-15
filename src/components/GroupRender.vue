@@ -13,21 +13,24 @@
           </div>
           <input type="text" v-model="group.name" class="form-control" style="height:40px">
         </div>
-        <el-button class="col el-icon-plus  " @click="add_field"> 添加列</el-button>
+        <el-button class="col el-icon-plus  " @click.stop="show_field_dlg"> 添加列</el-button>
         <el-button class="col el-icon-delete" type="danger" @click="delete_group"> 删除组</el-button>
         <el-button class="col el-icon-refresh mr-3" @click="save_group"> 保存组</el-button>
       </div>
 
-      <div class="alert alert-info w-100 mt-2">
+      <!-- <div class="alert alert-info w-100 mt-2">
         <pre style="text-align:left">{{ JSON.stringify(group, null, 2) }}</pre>
-      </div>
+      </div> -->
     </div>
 
     <el-collapse-transition>
       <ul class="list-group list-group-flush" v-show="toggle_visible" >
-        <li class="list-group-item text-left">
-          <FieldGenerate v-model="tmp_field"  />
+        <el-collapse-transition>
+        <li class="list-group-item text-left" v-if="toggle_field">
+          <!-- <FieldGenerate v-model="tmp_field" /> -->
+          <FieldGenerate @submit="add_field"/>
         </li>
+        </el-collapse-transition>
         <li class="list-group-item text-left" v-for="(field, index) in group.fields" :key="index" >
           <div class="input-group" >
             <FieldRender v-bind:field="field" class="col" v-if="field.label" v-model="value2[field.name]"/>
@@ -76,6 +79,7 @@ export default class GroupRender extends Vue {
   @Prop() private item!: Item;
   // 展开或者关闭
   toggle_visible: boolean = true;
+  toggle_field: boolean = false; // 新建字段
   private value2: { [key: string]: any } = { ...this.item };
 
   @Watch("value2", { immediate: false, deep: true })
@@ -100,14 +104,24 @@ export default class GroupRender extends Vue {
   // 打开编辑字段对话框
   show_field_dlg() {
     // TODO...
+    // toggle_field = !toggle_field; toggle_visible = toggle_field || toggle_visible
+    // 组隐藏时， 固定显示组和字段填写
+    if (!this.toggle_visible) {
+      this.toggle_field = true;
+      this.toggle_visible = true;
+    } else {
+      this.toggle_field = !this.toggle_field;
+    }
   }
-  add_field() {
+  add_field(field_cfg) {
+    console.log(field_cfg);
     // 提供template_id, group_index
     this.$store.commit(types.ADD_FIELD, {
       index_group: this.index_group,
-      fields: []
+      field: { ...field_cfg }
     });
     this.$forceUpdate();
+    this.toggle_field = false;
   }
 
   delete_group() {
@@ -122,10 +136,10 @@ export default class GroupRender extends Vue {
   }
 
   delete_field(index) {
-    // this.$store.commit(types.DELETE_FIELD, {
-    //   index_group: this.index_group,
-    //   index_field: index
-    // });
+    this.$store.commit(types.DELETE_FIELD, {
+      index_group: this.index_group,
+      index_field: index
+    });
     this.$forceUpdate();
     this.$message({
       type: "info",
