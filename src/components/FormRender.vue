@@ -8,10 +8,6 @@
     </div>
     <div class="col-full px-0 my-1" v-else>
       <div class="alert alert-danger no-gutter ">正在修改模板...</div>
-      <!-- <div class="alert alert-info w-100">
-        <pre style="text-align:left">{{ JSON.stringify(config, null, 2) }}</pre>
-      </div> -->
-      
       <div class="row">
         <div class="input-group col-8">
           <div class="input-group-prepend">
@@ -34,6 +30,8 @@
       :editable="editable"
       class="w-100"
       v-model="formdata[group.name]"
+      @destroyed="$forceUpdate()"
+      v-on:submit="save_data"
     />
   </div>
 </template>
@@ -68,18 +66,23 @@ export default class FormRender extends Vue {
   formdata: any = {};
 
   save_data() {
+    console.log("save data", this.formdata);
     // this.$store.commit(types.ADD_ITEMS, this.formdata);
-    // this.$store.dispatch(types.ACTION_SAVE_DATA, this.formdata);
+    this.$store.dispatch(types.ACTION_SAVE_DATA, this.formdata);
     this.$forceUpdate();
     // this.anydata.
   }
 
   group_data(group) {
-    var o = {};
+    let o = {};
+    let refdata = this.item;
+    if (!this.item || Object.keys(this.item).length == 0) {
+      refdata = this.formdata;
+    }
     // group.fields.map(e => e.name);
     if (group.fields) {
       group.fields.forEach(({ name }) => {
-        o[name] = this.item[name];
+        o[name] = refdata[name];
       });
     }
     return o;

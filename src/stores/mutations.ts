@@ -2,6 +2,7 @@
 import * as types from "./mutations_type";
 import { MutationTree, Mutation } from "vuex";
 import { State, CONFIG, GROUP, FIELD, Item } from "@/store";
+import { Message, Notification } from "element-ui";
 
 const mutations: MutationTree<State> = {
   CHANGE_API_URL(state: State, new_url: string) {
@@ -64,8 +65,9 @@ const mutations: MutationTree<State> = {
     console.log("add template group: ", group);
   },
   // delete group
-  [types.DELETE_GROUP](state: State, payload: any) {
+  [types.DELETE_GROUP](state: State, { index_group }) {
     // TODO
+    state.template_list[state.template_id].groups.splice(index_group, 1);
   },
   // update group
   [types.UPDATE_GROUP](state: State, payload: any) {

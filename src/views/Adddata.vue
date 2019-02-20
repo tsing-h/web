@@ -15,8 +15,8 @@
         <button class="btn btn-outline-secondary" @click="change_api_url">Change</button>
       </div>
     </div>
-    <TemplateSwitch v-bind:url="'http://localhost:5000/clinicals/templatelist'" :add="false" class="col w-100 " />
-    <FormRender msg="this is test" v-bind:edit="false" v-if="$store.getters.config.template_id"></FormRender>
+    <TemplateSwitch :url="'http://localhost:5000/clinicals/templatelist'" :add="false" class="col w-100 " />
+    <FormRender :editable="false" v-if="$store.getters.config.template_id"></FormRender>
   </div>
 </template>
 
@@ -24,6 +24,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import TemplateSwitch from "@/components/TemplateSwitch.vue";
 import FormRender from "@/components/FormRender.vue";
+import * as types from "../stores/mutations_type";
 
 @Component({
   components: { TemplateSwitch, FormRender }
@@ -32,6 +33,7 @@ export default class Adddata extends Vue {
   api_url: string = "";
   created() {
     this.api_url = this.$store.state.url_prefix;
+    this.$store.commit(types.ADD_ITEMS, {});
   }
   // DEBUG ONLY
   change_api_url() {

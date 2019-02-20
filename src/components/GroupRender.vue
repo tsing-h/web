@@ -3,19 +3,18 @@
     <!-- 组名 -->
     <div class="card-header align-items-start"  @click="toggle_visible = !toggle_visible" v-if="!editable">
       <label class="h4 float-left mt-2">{{ group.name }}</label>
-      <el-button class="el-icon-refresh float-right ml-2" @click="save_group"> 保存</el-button>
+      <el-button class="el-icon-refresh float-right ml-2" @click.stop="save_group"> 保存组数据</el-button>
     </div>
     <div class="card-header align-items-start"  @click="toggle_visible = !toggle_visible" v-else>
       <div class="row" >
-        <div class="input-group col-8">
+        <div class="input-group col-9">
           <div class="input-group-prepend">
             <span class="input-group-text">组&nbsp;&nbsp;名:</span>
           </div>
-          <input type="text" v-model="group.name" class="form-control" style="height:40px">
+          <input type="text" v-model="group.name" class="form-control" style="height:40px" @click.stop="return false" />
         </div>
         <el-button class="col el-icon-plus  " @click.stop="show_field_dlg"> 添加列</el-button>
-        <el-button class="col el-icon-delete" type="danger" @click="delete_group"> 删除组</el-button>
-        <el-button class="col el-icon-refresh mr-3" @click="save_group"> 保存组</el-button>
+        <el-button class="col el-icon-delete" type="danger" @click.stop="delete_group"> 删除组X</el-button>
       </div>
 
       <!-- <div class="alert alert-info w-100 mt-2">
@@ -94,9 +93,7 @@ export default class GroupRender extends Vue {
   }
 
   created() {
-    // if(this.item)
     this.value2 = { ...this.item };
-    console.log(this.item);
   }
 
   // 当处于编辑模板场景时:
@@ -126,13 +123,14 @@ export default class GroupRender extends Vue {
 
   delete_group() {
     // TODO...
-    this.$store.dispatch(types.DELETE_GROUP, {
+    this.$store.commit(types.DELETE_GROUP, {
       index_group: this.index_group
     });
     this.$message({
-      type: "info",
+      type: "warning",
       message: "模板已更新，请及时保存"
     });
+    this.$emit("destroyed");
   }
 
   delete_field(index) {
@@ -149,24 +147,15 @@ export default class GroupRender extends Vue {
 
   save_group() {
     // TODO 需要出发后端交互
-    this.$store.dispatch(types.ACTION_SAVE_GROUP, {
-      group: this.group.name,
-      value: this.value2
-    });
-    this.$message({
-      type: "success",
-      message: "模板已更新成功"
-    });
+    // this.$store.dispatch(types.ACTION_SAVE_GROUP, {
+    //   group: this.group.name,
+    //   value: this.value2
+    // });
+    // this.$message({
+    //   type: "success",
+    //   message: "模板已更新成功"
+    // });
+    this.$emit("submit");
   }
-
-  // mounted() {
-  //   console.log("mounted", this.group);
-  // }
-  // beforeUpdate() {
-  //   console.log("beforeUpdate");
-  // }
-  // updated() {
-  //   console.log("updated");
-  // }
 }
 </script>

@@ -4,7 +4,7 @@ import * as types from "./mutations_type";
 import { State, CONFIG, GROUP, FIELD, Item } from "@/store";
 
 import axios from "axios";
-import { Message } from "element-ui";
+import { Message, Notification } from "element-ui";
 
 const url_prefix: string = "http://localhost:5000/clinicals";
 const actions: ActionTree<State, any> = {
@@ -29,22 +29,15 @@ const actions: ActionTree<State, any> = {
     context: { commit: Commit; state: State },
     { template_id }
   ) => {
-    // console.log(
-    //   "update template in action: ",
-    //   context.state.template_list[template_id]
-    // );
     // 上传模板配置到后台
     const cfg: CONFIG = context.state.template_list[template_id];
-    // const cfg: string = JSON.stringify(
-    //   context.state.template_list[template_id]
-    // );
     return axios
       .post(`${url_prefix}/template/${template_id}`, JSON.stringify(cfg))
       .then(rsp => {
         const data: any = rsp.data;
         const { status, msg, templateid } = rsp.data;
         console.log(data.code);
-        if (status != "success"){
+        if (status != "success") {
           Message({
             type: "error",
             message: msg
@@ -52,11 +45,11 @@ const actions: ActionTree<State, any> = {
         } else {
           const msg: string = JSON.stringify(rsp.data);
           // 新增模板时，需要更改本地配置
-          if (template_id != templateid){
+          if (template_id != templateid) {
             cfg.template_id = templateid;
             // context.commit(types.SELECT_TEMPLATE, templateid);
             context.commit(types.DELETE_TEMPLATE, template_id);
-            context.commit(types.ADD_TEMPLATE, cfg)
+            context.commit(types.ADD_TEMPLATE, cfg);
           }
 
           Message({
@@ -96,23 +89,29 @@ const actions: ActionTree<State, any> = {
     // 须确保store之前已经加载过axios插件了
     let _axios = axios;
     _axios
-      .post(context.state.url_prefix + "/adddata", { data: payload })
+      .post(context.state.url_prefix + "/add", { data: payload })
       .then(rsp => {
         console.log(rsp);
       })
-      .catch(err => {
-        console.log(err);
+      .catch((err: Error) => {
+        Notification({
+          type: "error",
+          title: err.name,
+          dangerouslyUseHTMLString: true,
+          message: `<code>${err.message}</code>`,
+          duration: 5000
+        });
       });
 
     context.commit(types.ADD_ITEMS, payload);
   },
 
-  [types.ACTION_SAVE_GROUP]: (context: { commit: Commit }, payload: any) => {
-    // 上传数据，触发
-    console.log("save group in action: ", payload);
-    // 1. 数据尚未存在，添加组
-    // 2. 数据已存在，更新组
-    context.commit(types.UPDATE_GROUP, payload);
+  [types.ACTION_SAVE_GROUP]: (
+    context: { commit: Commit; state: State },
+    payload: any
+  ) => {
+    // 减少与store交互的组件
+    // 子组件通过submit事件，触发父组件的ACTION_SAVE_DATA
   },
 
   [types.SHOW_ITEM]: (context: { commit: Commit }, item: any) => {

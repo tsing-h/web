@@ -1,0 +1,10 @@
+version: '2.1'
+
+services:
+  web:
+    image: web
+    build: .
+    environment:
+      NODE_ENV: production
+    ports:
+      - 6666:6666

@@ -27,6 +27,7 @@
       </div>
     </div>
 
+    <ClinicalTable2 :url="'/clinical.csv'"  v-show="false"/>
     <!-- 数据展示 -->
     <div class="row table-responsible">
       <div class="input-group my-1" v-if="$store.getters.config.groups">
@@ -61,11 +62,12 @@ import { Component, Vue } from "vue-property-decorator";
 import TemplateSwitch from "@/components/TemplateSwitch.vue";
 import FieldSelect from "@/components/FieldSelect.vue";
 import ClinicalTable from "@/components/ClinicalTable.vue";
+import ClinicalTable2 from "@/components/ClinicalTable2.vue";
 
 import axios from "@/plugins/axios";
 
 @Component({
-  components: { TemplateSwitch, FieldSelect, ClinicalTable }
+  components: { TemplateSwitch, FieldSelect, ClinicalTable, ClinicalTable2 }
 })
 export default class Index extends Vue {
   template_url: string = "http://localhost:5000/clinicals/templatelist";

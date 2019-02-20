@@ -1,0 +1,10 @@
+module.exports = {
+  chainWebpack: config => {
+    config.plugin("html").tap(args => {
+      // args是传递给HtmlWebpackPlugin构造函数的第一个参数，即对象
+      // 配合vue inspect --plugin html查看效果
+      args[0].title = "My APP";
+      return args;
+    });
+  }
+};
