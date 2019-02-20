@@ -6,7 +6,7 @@ import { State, CONFIG, GROUP, FIELD, Item } from "@/store";
 import axios from "axios";
 import { Message, Notification } from "element-ui";
 
-const url_prefix: string = "http://localhost:5000/clinicals";
+const url_prefix: string = "http://192.168.1.251:5000/clinicals";
 const actions: ActionTree<State, any> = {
   [types.ACTION_INIT_TEMPLATE_LIST]: (context: { commit: Commit }, { url }) => {
     console.log("fetch template list in action: ", url);
