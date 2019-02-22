@@ -1,7 +1,7 @@
 <template>
   <div class="container-flex">
     
-    <TemplateSwitch v-bind:url="'http://localhost:5000/clinicals/templatelist'" :add="true" />
+    <TemplateSwitch v-bind:url="`${$store.state.url_prefix}/templatelist`" :add="true" />
     <FormRender msg="this is test" v-bind:editable="true" v-if="$store.getters.config.template_id" :item="$store.state.item_detail"></FormRender>
     
   </div>

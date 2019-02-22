@@ -12,7 +12,7 @@
     <!-- 搜索栏 and  模板选择 -->
     <div class="row mt-3 my-1">
       <!-- 搜索 -->
-      <div class="input-group col-8 pl-0">
+      <div class="input-group col-7 pl-0">
         <input type="text" class="form-control" style="height:40px">
         <div class="input-group-append">
           <button class="btn btn-outline-secondary">搜索</button>
@@ -20,10 +20,11 @@
       </div>
 
       <!-- 选择模板 -->
-      <TemplateSwitch v-bind:url="template_url" :add="false" class="col-2 " />
+      <TemplateSwitch v-bind:url="`${$store.state.url_prefix}/templatelist`" class="col-2 " />
 
-      <div class="col-2 pr-0">
-        <el-button class="el-icon-plus w-100" @click="$router.push({path:'adddata'})"> 添加数据</el-button>
+      <div class="col-3 input-group px-0">
+        <el-button class="el-icon-plus col" @click="$router.push({path:'adddata'})"> 添加数据</el-button>
+        <el-button class="el-icon-setting col" @click="$router.push({path:'template'})"> 模板设置</el-button>
       </div>
     </div>
 
@@ -70,7 +71,7 @@ import axios from "@/plugins/axios";
   components: { TemplateSwitch, FieldSelect, ClinicalTable, ClinicalTable2 }
 })
 export default class Index extends Vue {
-  template_url: string = "http://localhost:5000/clinicals/templatelist";
+  template_url: string = "http://192.168.1.251:5000/clinicals/templatelist";
   config: any = {};
   page: { [key: string]: number | number[] } = {
     perPage: 10,

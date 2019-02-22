@@ -14,7 +14,7 @@
           <input type="text" v-model="group.name" class="form-control" style="height:40px" @click.stop="return false" />
         </div>
         <el-button class="col el-icon-plus  " @click.stop="show_field_dlg"> 添加列</el-button>
-        <el-button class="col el-icon-delete" type="danger" @click.stop="delete_group"> 删除组X</el-button>
+        <el-button class="col el-icon-delete" type="danger" @click.stop="delete_group"> 删除组</el-button>
       </div>
 
       <!-- <div class="alert alert-info w-100 mt-2">

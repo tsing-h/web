@@ -1,6 +1,7 @@
 node_modules
 npm-debug.log
 Dockerfile*
+*.dockerfile
 docker-compose*
 .dockerignore
 .git
@@ -11,3 +12,6 @@ docker-compose*
 README.md
 LICENSE
 .vscode
+package-lock.json
+dist
+*.bak

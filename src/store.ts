@@ -52,7 +52,7 @@ const state: State = {
   page_size: 10,
   current_item: 0,
   item_detail: {},
-  url_prefix: "http://localhost:5000/clinicals"
+  url_prefix: "http://192.168.1.146:5000/clinicals"
 };
 
 let getters = {
