@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex, { Commit, Mutation, Action } from "vuex";
-import axios from "./plugins/axios";
-import * as types from "./stores/mutations_type";
+// import axios from "./plugins/axios";
+// import * as types from "./stores/mutations_type";
 import mutations from "./stores/mutations";
 import actions from "./stores/actions";
 
@@ -56,21 +56,11 @@ const state: State = {
 };
 
 let getters = {
-  // 获取当前配置信息
   config: (state: State) => {
     return state.template_id ? state.template_list[state.template_id] : {};
   }
-  // 根据索引获取指定元素
-  // item: (state: State, index: number) => state.items[index]
 };
 
-// let actions = {
-//   // 添加新的模板, 同时设定当前选中的模板
-//   add_template(context: { commit: Commit; state: State }, config: CONFIG) {
-//     context.commit(types.ADD_TEMPLATE, config);
-//     context.commit(types.SELECT_TEMPLATE, config.template_id);
-//   }
-// };
 
 export default new Vuex.Store({
   state,

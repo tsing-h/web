@@ -35,7 +35,7 @@
         <div class="input-group-prepend">
           <p class="input-group-text">显示或隐藏字段</p>
         </div>
-        <FieldSelect :groups="group" v-model="show_fields"  class="col-4" ref="FieldSelect" />
+        <FieldSelect :groups="group" v-model="show_fields"  class="col-4" />
 
         <!-- 设置每页显示行数 -->
         <el-select v-model="page['perPage']" placeholder="每页行数" collapse-tags style="" class="ml-auto">
@@ -62,12 +62,9 @@ import { Component, Vue } from "vue-property-decorator";
 import TemplateSwitch from "@/components/TemplateSwitch.vue";
 import FieldSelect from "@/components/FieldSelect.vue";
 import ClinicalTable from "@/components/ClinicalTable.vue";
-import ClinicalTable2 from "@/components/ClinicalTable2.vue";
-
-import axios from "@/plugins/axios";
 
 @Component({
-  components: { TemplateSwitch, FieldSelect, ClinicalTable, ClinicalTable2 }
+  components: { TemplateSwitch, FieldSelect, ClinicalTable }
 })
 export default class Index extends Vue {
   page: { [key: string]: number | number[] } = {
@@ -90,6 +87,7 @@ export default class Index extends Vue {
 
   search() {
     if (this.query) this.query_ = "?query=" + this.query;
+    else this.query_ = "";
   }
 }
 </script>
