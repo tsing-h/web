@@ -9,7 +9,7 @@ import { Message, Notification } from "element-ui";
 const url_prefix: string = "http://192.168.1.251:5000/clinicals";
 const actions: ActionTree<State, any> = {
   [types.ACTION_INIT_TEMPLATE_LIST]: (context: { commit: Commit }, { url }) => {
-    console.log("fetch template list in action: ", url);
+    // console.log("fetch template list in action: ", url);
     return axios.get(url).then(rsp => {
       let data = rsp.data.data;
       // console.log(data);
@@ -36,7 +36,7 @@ const actions: ActionTree<State, any> = {
       .then(rsp => {
         const data: any = rsp.data;
         const { status, msg, templateid } = rsp.data;
-        console.log(data.code);
+        // console.log(data.code);
         if (status != "success") {
           Message({
             type: "error",
@@ -67,10 +67,10 @@ const actions: ActionTree<State, any> = {
     context: { commit: Commit; state: State },
     { template_id }
   ) => {
-    console.log("delete template in action: ", context.state.template_id);
+    // console.log("delete template in action: ", context.state.template_id);
     // 上传模板配置到后台
     return axios
-      .get(`${url_prefix}/template/${template_id}/delete`)
+      .get(`${context.state.url_prefix}/template/${template_id}/delete`)
       .then(() => {
         context.commit(types.DELETE_TEMPLATE, { template_id });
         Message({
@@ -84,14 +84,13 @@ const actions: ActionTree<State, any> = {
     context: { commit: Commit; state: State },
     payload: any
   ) => {
-    // 上传数据，触发
-    console.log("save data in action: ", payload);
-    // 须确保store之前已经加载过axios插件了
-    let _axios = axios;
-    _axios
+    axios
       .post(context.state.url_prefix + "/add", { data: payload })
       .then(rsp => {
-        console.log(rsp);
+        Message({
+          type: "success",
+          message: "数据已保存"
+        });
       })
       .catch((err: Error) => {
         Notification({
@@ -106,6 +105,10 @@ const actions: ActionTree<State, any> = {
     context.commit(types.ADD_ITEMS, payload);
   },
 
+  [types.ACTION_DELETE_ITEM]: ({ commit, state }, { index, id }) => {
+    return axios.get(`${state.url_prefix}/data/${id}/delete`);
+  },
+
   [types.ACTION_SAVE_GROUP]: (
     context: { commit: Commit; state: State },
     payload: any
@@ -116,7 +119,7 @@ const actions: ActionTree<State, any> = {
 
   [types.SHOW_ITEM]: (context: { commit: Commit }, item: any) => {
     // 上传数据，触发
-    console.log("show detail info for data: ", item);
+    // console.log("show detail info for data: ", item);
     // 1. 数据尚未存在，添加组
     // 2. 数据已存在，更新组
     // context.commit(types.UPDATE_GROUP, item);

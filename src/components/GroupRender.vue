@@ -3,7 +3,7 @@
     <!-- 组名 -->
     <div class="card-header align-items-start"  @click="toggle_visible = !toggle_visible" v-if="!editable">
       <label class="h4 float-left mt-2">{{ group.name }}</label>
-      <el-button class="el-icon-refresh float-right ml-2" @click.stop="save_group"> 保存组数据</el-button>
+      <!-- <el-button class="el-icon-refresh float-right ml-2" @click.stop="save_group"> 保存组数据</el-button> -->
     </div>
     <div class="card-header align-items-start"  @click="toggle_visible = !toggle_visible" v-else>
       <div class="row" >

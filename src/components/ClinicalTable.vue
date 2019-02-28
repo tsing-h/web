@@ -11,44 +11,12 @@
         <b-pagination class="col mb-0" align="right" :total-rows="page.totalRows" v-model="page['currentPage']" :per-page="page['perPage']"></b-pagination>
       </div>
     </template>
-  <!-- 
-    <template slot="chr_pos" slot-scope="row">
-      {{ row.item.chrom }}-{{ row.item.pos }}-{{ row.item.ref }}-{{ row.item.alt }}
-    </template>
-    <template slot="wbc" slot-scope="row">
-      {{ row.item.wbc  }}
-    </template>
-    <template slot="af" slot-scope="row">
-      {{ (parseFloat(row.item.af)*100).toFixed(2) + "%"  }} 
-    </template>
-    -->
     <template slot="ACTIONS" slot-scope="row">
-        <b-button size="sm" @click.stop="show_detail(row)"> Details</b-button>
+        <el-button-group>
+          <el-button size="mini" round icon="el-icon-view" title="show detail" @click.stop="show_detail(row)"></el-button>
+          <el-button size="mini" round icon="el-icon-delete" @click.stop="delete_item(row)"></el-button>
+        </el-button-group>
     </template>
-    <!--
-    Details
-    <template slot="row-details" slot-scope="row" >
-      <div class="card">
-        <table class="table table-sm table-bordered" v-for="(db_info, db_name) in fields" :key="db_name">
-          <tr   >
-            <td rowspan="2" style="vertical-align: middle; width:7rem; " class="br-1">{{ db_name }}</td>
-            <td v-for="(item, index) in db_info.fields" :key="index">
-              <div class="badge text-truncate" style=" flex:1 auto" :title="item[0].toLowerCase()">
-                {{ item[0].toLowerCase() }}
-              </div>
-            </td>
-          </tr>
-          <tr  >
-            <td class="" v-for="(item, index) in db_info.fields" :key="index">
-              <div class="badge  text-truncate" style=" flex:1 auto" :title="row.item[item[0].toLowerCase()]">
-                {{ row.item[item[0].toLowerCase()] }}
-              </div>
-            </td>
-          </tr>
-        </table>
-      </div>
-    </template>
-    -->
   </b-table> 
   
 </template>
@@ -69,13 +37,39 @@ export default class ClinicalTable extends Vue {
   // 组件数据交互 v-model功能需要有个Prop：value，以及适当情况下$emit("input", value)
   @Prop() private value!: { [key: string]: any };
 
+  @Watch("url")
+  handleUrlChange(url: string, oldUrl: string) {
+    if (url) {
+      this.init_items();
+    }
+  }
+
   items: any[] = [];
   header: string[] = [];
   created() {
-    axios.get(this.url).then(rsp => {
+    this.init_items();
+  }
+
+  init_items() {
+    axios.get(this.url).then(({ data }) => {
       // console.log(rsp);
-      this.items = this.text2obj(rsp.data);
-      this.page.totalRows = this.items.length;
+      if (data.status != "success") {
+        this.$notify({
+          type: "error",
+          message: data.msg,
+          duration: 10000
+        });
+        return;
+      }
+      data = data.data;
+      if (data instanceof Array) {
+        this.header = Object.keys(data[0]);
+        this.page.totalRows = data.length;
+        this.items = data;
+      } else {
+        this.items = this.text2obj(data);
+        this.page.totalRows = this.items.length;
+      }
       this.$store.commit(types.INIT_ITEMS, this.items);
     });
   }
@@ -151,6 +145,21 @@ export default class ClinicalTable extends Vue {
   show_detail(row) {
     this.$store.commit(types.SHOW_ITEM, row.item);
     this.$router.push({ path: "/detail" });
+  }
+
+  delete_item(row) {
+    // this.$notify.success(JSON.stringify(row.index));
+    // this.dispatch()
+    this.$store
+      .dispatch(types.ACTION_DELETE_ITEM, {
+        index: row.index,
+        id: row.item.id
+      })
+      .then(rsp => {
+        this.$store.commit(types.DEL_ITEMS, row.item.id);
+        this.items.splice(row.index, 1);
+        // this.$notify.success("data has been deleted");
+      });
   }
 }
 </script>

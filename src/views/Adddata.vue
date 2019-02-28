@@ -3,7 +3,7 @@
     <div class="w-100">
       <!-- <code class="">{{ $store.getters.config }}</code> -->
     </div>
-    <div class="input-group mb-1">
+    <div class="input-group mb-1" v-show="false">
       <div class="input-group-prepend">
         <span class="input-group-text">测试URL</span>
       </div>
@@ -15,7 +15,7 @@
         <button class="btn btn-outline-secondary" @click="change_api_url">Change</button>
       </div>
     </div>
-    <TemplateSwitch :url="'http://localhost:5000/clinicals/templatelist'" :add="false" class="col w-100 " />
+    <TemplateSwitch :url="'http://localhost:5000/clinicals/templatelist'" :add="false" v-show="$store.state.template_id == ''" />
     <FormRender :editable="false" v-if="$store.getters.config.template_id"></FormRender>
   </div>
 </template>

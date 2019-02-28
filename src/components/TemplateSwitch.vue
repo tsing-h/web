@@ -53,12 +53,15 @@ export default class TemplateSwitch extends Vue {
       this.$store
         .dispatch(types.ACTION_INIT_TEMPLATE_LIST, { url: this.url })
         .then(() => {
-          console.log(
-            "init template list end",
-            this.$store.state.template_list
-          );
+          // console.log(
+          //   "init template list end",
+          //   this.$store.state.template_list
+          // );
           this.template_list = this.$store.state.template_list;
           this.$forceUpdate();
+
+          // 默认选择第一个模板
+          this.change_template(Object.keys(this.template_list)[0]);
         });
     }
   }
@@ -85,9 +88,11 @@ export default class TemplateSwitch extends Vue {
           this.$store.commit(types.UPDATE_TEMPLATE, config);
           this.$store.commit(types.SELECT_TEMPLATE, config.template_id);
           this.$forceUpdate();
+          this.$emit("change_template", null);
         });
       } else {
         this.$store.commit(types.SELECT_TEMPLATE, config.template_id);
+        this.$emit("change_template", null);
       }
     }
   }

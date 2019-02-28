@@ -1,8 +1,8 @@
 <template>
   <div :class="'w-100'">
     <!-- 模板头 -->
-    <div class="col pl-0 my-1" v-if="!editable">
-      <label class="h4 float-left mt-2">模板: {{ config.name }}</label>
+    <div class="col px-0 my-1" v-if="!editable">
+      <label class="h4 float-left mt-2"> {{ config.name }}</label>
 
       <el-button class="el-icon-refresh float-right ml-2" @click="save_data"> 保存</el-button>
     </div>

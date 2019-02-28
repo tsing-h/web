@@ -16,8 +16,8 @@
       </div>
     </div>
 
-    <TemplateSwitch v-bind:url="'http://localhost:5000/clinicals/templatelist'" :add="false" class="col w-100 " />
-    <FormRender msg="this is test" v-bind:edit="false" v-if="$store.getters.config.template_id" :item="$store.state.item_detail"></FormRender>
+    <TemplateSwitch v-bind:url="'http://localhost:5000/clinicals/templatelist'" :add="false" v-show="false"/>
+    <FormRender v-bind:editable="false" v-if="$store.getters.config.template_id" :item="$store.state.item_detail"></FormRender>
   </div>
 </template>
 

@@ -7,7 +7,7 @@ import { Message, Notification } from "element-ui";
 const mutations: MutationTree<State> = {
   CHANGE_API_URL(state: State, new_url: string) {
     state.url_prefix = new_url;
-    console.log("init", state.url_prefix);
+    // console.log("init", state.url_prefix);
   },
   // add template
   [types.ADD_TEMPLATE](state: State, payload: CONFIG) {
@@ -18,19 +18,19 @@ const mutations: MutationTree<State> = {
   [types.UPDATE_TEMPLATE](state: State, payload: CONFIG) {
     // state.template_list[template_id].groups = { ...groups };
     state.template_list[payload.template_id] = { ...payload };
-    console.log("update", payload);
+    // console.log("update", payload);
   },
   // delete template
   [types.DELETE_TEMPLATE](state: State, { template_id }) {
     delete state.template_list[template_id];
     state.template_id = "";
-    console.log("delete", template_id);
+    // console.log("delete", template_id);
   },
 
   // add data
   [types.ADD_ITEMS](state: State, item: Item) {
     state.items.push(item);
-    console.log("add_item", item);
+    // console.log("add_item", item);
   },
   // delete data
   [types.DEL_ITEMS](state: State, index: number) {
@@ -46,7 +46,7 @@ const mutations: MutationTree<State> = {
   // 设置当前模板
   [types.SELECT_TEMPLATE](state: State, template_id: string) {
     state.template_id = template_id;
-    console.log("select template: ", template_id);
+    // console.log("select template: ", state);
   },
 
   [types.SELECT_ITEM](state: State, index: number) {
@@ -55,14 +55,14 @@ const mutations: MutationTree<State> = {
 
   [types.SHOW_ITEM](state: State, item: Item) {
     state.item_detail = { ...item };
-    console.log("show detail info for data: ", item);
+    // console.log("show detail info for data: ", item);
   },
 
   // add group
   [types.ADD_GROUP](state: State, group: any) {
     // state.template_id = template_id;
     state.template_list[state.template_id].groups.push(group);
-    console.log("add template group: ", group);
+    // console.log("add template group: ", group);
   },
   // delete group
   [types.DELETE_GROUP](state: State, { index_group }) {
@@ -76,7 +76,7 @@ const mutations: MutationTree<State> = {
   // add field
   [types.ADD_FIELD](state: State, { index_group, field }) {
     // TODO
-    console.log("add field", { index_group, field });
+    // console.log("add field", { index_group, field });
     state.template_list[state.template_id].groups[index_group].fields.push(
       field
     );
@@ -89,12 +89,12 @@ const mutations: MutationTree<State> = {
     state.template_list[state.template_id].groups[
       payload.index_group
     ].fields.splice(payload.index_field, 1);
-    console.log(
-      `delete the [${payload.index_field}th] field in the [` +
-        `${payload.index_group}th] GROUP for TEMPLATE[${state.template_id}]\n`,
-      payload,
-      state.template_list[state.template_id]
-    );
+    // console.log(
+    //   `delete the [${payload.index_field}th] field in the [` +
+    //     `${payload.index_group}th] GROUP for TEMPLATE[${state.template_id}]\n`,
+    //   payload,
+    //   state.template_list[state.template_id]
+    // );
   }
 };
 
