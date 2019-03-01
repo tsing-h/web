@@ -1,5 +1,6 @@
 <template>
   <div :class="'w-100'">
+    <!-- <code class="">{{ config }}</code> -->
     <!-- 模板头 -->
     <div class="col px-0 my-1" v-if="!editable">
       <label class="h4 float-left mt-2"> {{ config.name }}</label>
@@ -58,8 +59,6 @@ export default class FormRender extends Vue {
 
   @Watch("config")
   onConfigChanged(val: any, oldVal: any) {
-    // this.editable = false;
-    // this.editable = false;
     this.formdata = {};
   }
 
@@ -67,10 +66,8 @@ export default class FormRender extends Vue {
 
   save_data() {
     console.log("save data", this.formdata);
-    // this.$store.commit(types.ADD_ITEMS, this.formdata);
     this.$store.dispatch(types.ACTION_SAVE_DATA, this.formdata);
     this.$forceUpdate();
-    // this.anydata.
   }
 
   group_data(group) {
@@ -79,7 +76,6 @@ export default class FormRender extends Vue {
     if (!this.item || Object.keys(this.item).length == 0) {
       refdata = this.formdata;
     }
-    // group.fields.map(e => e.name);
     if (group.fields) {
       group.fields.forEach(({ name }) => {
         o[name] = refdata[name];

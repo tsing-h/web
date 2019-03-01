@@ -36,7 +36,7 @@ export default new Router({
         import(/* webpackChunkName: "adddata" */ "./views/Adddata.vue")
     },
     {
-      path: "/detail",
+      path: "/detail/:id",
       name: "detail",
       component: () =>
         import(/* webpackChunkName: "detail" */ "./views/Showdata.vue")

@@ -105,6 +105,22 @@ const actions: ActionTree<State, any> = {
     context.commit(types.ADD_ITEMS, payload);
   },
 
+  [types.ACTION_FETCH_ITEM]: ({ commit, state }, item_id) => {
+    return new Promise((res, rej) => {
+      //
+      axios
+        .get(`${state.url_prefix}/data/${item_id}`)
+        .then(rsp => {
+          const item = rsp.data.data;
+          commit(types.SHOW_ITEM, item);
+          res(item);
+        })
+        .catch(reason => {
+          rej(reason);
+        });
+    });
+  },
+
   [types.ACTION_DELETE_ITEM]: ({ commit, state }, { index, id }) => {
     return axios.get(`${state.url_prefix}/data/${id}/delete`);
   },

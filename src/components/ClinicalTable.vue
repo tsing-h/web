@@ -89,7 +89,7 @@ export default class ClinicalTable extends Vue {
 
   show_detail(row) {
     this.$store.commit(types.SHOW_ITEM, row.item);
-    this.$router.push({ path: "/detail" });
+    this.$router.push({ name: "detail", params: { id: row.item.id } });
   }
 
   delete_item(row) {
