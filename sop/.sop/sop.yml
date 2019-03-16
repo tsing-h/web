@@ -1,0 +1,2 @@
+{config: !!python/unicode '/home/sop/609/conf_609.json', input: !!python/unicode '1040130117YW_L2_R1.fq.gz',
+  output: !!python/unicode './', threads: 8}

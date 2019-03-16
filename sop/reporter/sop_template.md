@@ -1,1 +1,0 @@
-/home/huangqj/.templates/sop_template.md
