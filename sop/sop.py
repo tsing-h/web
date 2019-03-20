@@ -37,12 +37,14 @@ def show_env(output):
     fmt = "%20s\t%20s\t%20s\t%20s\t%10s"
     print fmt % ("sample_name", "step", "start_at", "end_at", "durations(s)")
     raw_fqs = config.get("raw_fqs", [])
+    qc_info = []
+    qc_info.append(config.get("qc_info", []))
     for sample in raw_fqs:
         config = load_cfg(path=output, cfgfile=sample+".yml")
 
         status_for_sample = config.get("status", {})
-        print json.dumps(config, indent=2)
-
+        # print json.dumps(config, indent=2)
+        qc_info.append(config.get("qc_info", []))
         steps = status_for_sample.keys()
         steps.sort(lambda a,b : cmp(int(a[0:2]), int(b[0:2])))
         for s in steps:
@@ -60,6 +62,14 @@ def show_env(output):
                 end_at, durations
             )
             sample = ''
+        
+        logs_for_step = ["formatted_fastqs", "first_maped", "deduped", "mpileuped", "statistics"]
+        for k in logs_for_step:
+            if k not in config:
+                continue
+    print "\n"            
+    for qc in qc_info:
+        print "\t".join([str(i) for i in qc])
 
 @cli.command("run", short_help="run the default pipeline")
 @click.option("--input", "-i", prompt="Directory or fq1", help="process a single[fq1] or batch[Dir] sample")

@@ -187,8 +187,12 @@ def fusion(ymlfile, cfgpath="./"):
     bam_clean = first_maped.get("clean", None)
     if bam_80bp and not bam_clean:
         bam_clean = first_maped.get("merged", None)
-    cmd = "python {0} -b {1} -C {2} -o {3} -p {4}" % (script_fusion, bam_clean, bam_80bp, os.path.join(config['output'], "fusion"), config['sample_prefix'])
-    run_cmd(cmd)
+    cmd = "python {0} -b {1} -C {2} -o {3} -p {4}".format(script_fusion, bam_clean, bam_80bp, os.path.join(config['output'], "fusion"), config['sample_prefix'])
+    try:
+        run_cmd(cmd)
+    except Exception as e:
+        # 忽略fusion的错误
+        save_cfg(cfgfile=ymlfile, path=cfgpath, fusioned={"logs":str(e)})
 
     # 清理中间文件
     cmd = "echo rm -f %s" % (os.path.join(config['output'], 'fusion', "*bam"))
@@ -205,10 +209,15 @@ def call_mutations(ymlfile, cfgpath="./"):
     if not bam:
         bam = first_maped['merged']
 
-    output, sample_prefix = config['output'], config['sample_prefix']
+    # samtools flagstat bam
+    cmd = "samtools flagstat %s" % bam
+    rst = run_cmd(cmd)
     mpileuped = {
-        "mpileup": os.path.join(output, sample_prefix+".mpileup")
+        "logs" : rst
     }
+
+    output, sample_prefix = config['output'], config['sample_prefix']
+    mpileuped["mpileup"] = os.path.join(output, sample_prefix+".mpileup")
     cmd = "samtools mpileup -BQ 10 -d 500000 -f {0} {1} > {2}".format(
         config['ref'], bam, mpileuped['mpileup']
     )
@@ -227,7 +236,7 @@ def call_mutations(ymlfile, cfgpath="./"):
     mpileuped['mutation'] = os.path.join(output, 'out', sample_prefix+".mpout_v2.1.txt")
     mpileuped['stat'] = os.path.join(output, 'out', sample_prefix+"_stat.txt")
     rst = run_cmd(cmd)
-    mpileuped['logs'] = rst
+    mpileuped['logs'] += rst
     save_cfg(cfgfile=ymlfile, path=cfgpath, mpileuped=mpileuped)
     return rst
 
@@ -248,6 +257,55 @@ def postprocess(ymlfile, cfgpath="./"):
     }
     save_cfg(cfgfile=ymlfile, path=cfgpath, statistics=statistics)
 
+    # qc_columns = ['file_name', 'RAW_BASE', 'CLEAN_BASE', 'CLEAN_Rate',
+    #     'Merge_Rate', 'Ontarget_Rate', 'Avg_Depth_Panle', 'Avg_depth_Mutation',
+    #     '0.2X_Rate', '0.5X_Rate', 'Mapped', 'properly_paired', 'OnTarget2'
+    # ]
+
+    qc = [''] * 13
+    qc[0] = config['sample_prefix']
+    formatted_fastqs_logs = config['formatted_fastqs'].get("logs", "")
+    if formatted_fastqs_logs:
+        # file_name	total_reads	total_base	cleaned_reads	rate_clean	base_trunc_R1 \
+        # base_clean_R1	base_trunc_R2	base_clean_R2	fileter_Q	rate_Q	filter_N \
+        # lack_long	merged	rate_merge	base_mergedno_error_sequence	rate	base_error	base_error_rate
+        infos = formatted_fastqs_logs.strip().split("\n")
+        info = infos[1].split()
+        raw_base, clean_base1, clean_base2, merge_rate = [info[i] for i in [2, 6, 8, 14]]
+        qc[1] = int(raw_base)
+        qc[2] = int(clean_base1) + int(clean_base2)
+        qc[3] = "%.4f%%" % (qc[2] * 1.0 / qc[1] * 100)
+        qc[4] = merge_rate
+
+    deduped_logs = config["deduped"].get("logs", "")
+    if deduped_logs:
+        # ./result/0050260001LF_L2.bam	797188	3851261	0.206994020919382
+        infos = deduped_logs.strip().split("\n")
+        info = infos[-1].split()    # [3]
+        qc[5] = info[3]             # Ontarget_Rate
+
+    statistics_logs = config['statistics'].get("logs", "")
+    if statistics_logs:
+        # file_name	count_panel	avg_depth_panel	count_mutation	avg_depth_mutation	count_0.2X	avg_depth_0.2X	count_0.5X	avg_depth_0.5X
+        # ./result/out/0050260001LF_L2_stat.txt	18351	1945.577	62	2380.516	14682	2425.455	12382	2736.745
+        infos = statistics_logs.strip().split("\n")
+        info = infos[-1].split()
+        count_panel, avg_depth_panel, avg_depth_mutation, count_02X, count_05X = [float(info[i]) for i in [1,2,4,5,7]]
+        qc[6:10] = avg_depth_panel,avg_depth_mutation,count_02X/count_panel,count_05X/count_panel
+
+    mpileup_logs = config['mpileuped'].get("logs", "")
+    if mpileup_logs:
+        # infos = mpileup_logs.strip().split("\n")
+        # 2277183 + 0 mapped (100.00% : N/A)
+        search_mapped = re.search(r"\d+ \+ \d mapped \((\d+\.\d+%)",mpileup_logs)
+        if search_mapped:
+            qc[10] = search_mapped.groups()[0]
+        # 2214496 + 0 properly paired (98.91% : N/A)
+        search_mapped2 = re.search(r"\d+ \+ \d properly paired \((\d+\.\d+%)",mpileup_logs)
+        if search_mapped:
+            qc[11] = search_mapped2.groups()[0]
+
+    save_cfg(cfgfile=ymlfile, path=cfgpath, qc_info=qc)
 
 def ctpip(sample_prefix, cfgpath="./", filelock=None):
     """处理单个样本
@@ -304,6 +362,7 @@ def ctpip(sample_prefix, cfgpath="./", filelock=None):
         save_cfg(cfgfile=cfgfile, current=current, status=status, path=cfgpath)
         
         # rst = process(cfgfile, cfgpath=cfgpath)
+        # return
         try:
             rst = process(cfgfile, cfgpath=cfgpath)
         except Exception as e:
@@ -379,5 +438,10 @@ def main(cfgpath="./"):
     for t in tasks:
         t.join()
 
-    save_cfg(path=cfgpath, action="end", filelock=lock)
+    # qc_info = "file_name,count_panel,avg_depth_panel,count_mutation,avg_depth_mutation,count_0.2X,avg_depth_0.2X,count_0.5X,avg_depth_0.5X".split(",")
+    qc_info = ['file_name', 'RAW_BASE', 'CLEAN_BASE', 'CLEAN_Rate',
+        'Merge_Rate', 'Ontarget_Rate', 'Avg_Depth_Panle', 'Avg_depth_Mutation',
+        '0.2X_Rate', '0.5X_Rate', 'Mapped', 'properly_paired', 'OnTarget2'
+    ]
+    save_cfg(path=cfgpath, action="end", filelock=lock, qc_info=qc_info)
     logging.debug("main pipeline ending...")
