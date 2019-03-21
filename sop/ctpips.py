@@ -282,7 +282,7 @@ def postprocess(ymlfile, cfgpath="./"):
         # ./result/0050260001LF_L2.bam	797188	3851261	0.206994020919382
         infos = deduped_logs.strip().split("\n")
         info = infos[-1].split()    # [3]
-        qc[5] = info[3]             # Ontarget_Rate
+        qc[5] = "{:.4f}%".format(float(info[3]) * 100)            # Ontarget_Rate
 
     statistics_logs = config['statistics'].get("logs", "")
     if statistics_logs:
@@ -291,7 +291,9 @@ def postprocess(ymlfile, cfgpath="./"):
         infos = statistics_logs.strip().split("\n")
         info = infos[-1].split()
         count_panel, avg_depth_panel, avg_depth_mutation, count_02X, count_05X = [float(info[i]) for i in [1,2,4,5,7]]
-        qc[6:10] = avg_depth_panel,avg_depth_mutation,count_02X/count_panel,count_05X/count_panel
+        qc[6:8] = avg_depth_panel,avg_depth_mutation, "{:.4f}%".format(count_02X/count_panel) ,"{:.4f}%".format(count_05X/count_panel)
+        qc[8] = "{:.4f}%".format(count_02X * 1.0 / count_panel * 100)
+        qc[9] = "{:.4f}%".format(count_05X * 1.0 / count_panel * 100)
 
     mpileup_logs = config['mpileuped'].get("logs", "")
     if mpileup_logs:
