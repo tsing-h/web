@@ -87,6 +87,12 @@ def main(**kw):
         click.echo(Fore.RED + "%s not exists" % fq1_or_input + Fore.RESET)
         return 
 
+    config = load_cfg(path=output)
+    if config:
+        if config.get('action', None):
+            click.echo(Fore.RED + "an exist job already in [%s], please select another directory or check the status" % output + Fore.RESET)
+            return
+
     # 保存配置信息到yml
     kw['update'] = False
     kw['action'] = "run"
@@ -163,6 +169,10 @@ def rerun(**kw):
     action = config.get("action", "run")
     if action in ["run", "continue", "rerun"]:
         click.echo(Fore.RED + "operate deny!!!you should stop the running job first!!!" + Fore.RESET)
+        return
+
+    if action not in ["pause", "end", "stop"]:
+        click.echo(Fore.RED + "operate deny!!!not a paused job!!! action is [%s]" % action + Fore.RESET)
         return
 
     save_cfg(action="rerun", path=kw['output'])

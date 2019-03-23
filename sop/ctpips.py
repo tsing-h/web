@@ -46,7 +46,7 @@ def preprocess(ymlfile, cfgpath="./"):
     fusion = "--nofusion" if not config.get('fusion', False) else '--fusion' 
 
     # # perl /home/sop/609/clean_merge_common.pl -fq1 {fq1} -o {path} -t {thread} {merge} {fusion}
-    cmd = "perl %s/clean_merge_common.pl -fq1 %s -o %s -t %d %s %s" % (path2script, fq1, output, thread, merge, fusion)
+    cmd = "perl %s/clean_merge_common.pl -fq1 %s -o %s -t %d %s %s --barcode" % (path2script, fq1, output, thread, merge, fusion)
     ret = run_cmd(cmd)
 
     # 产生了哪些文件?
